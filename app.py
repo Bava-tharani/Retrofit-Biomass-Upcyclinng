@@ -188,32 +188,47 @@ if st.session_state.intro_done:
         </div>
     """, unsafe_allow_html=True)
 
-    # --- LAYER 2: INTERACTIVE TELEMETRY TREND PLOTS ---
+    # --- LAYER 2: INTERACTIVE TELEMETRY TREND PLOTS (WITH INDIVIDUAL TABS) ---
     st.subheader("📈 Environmental Trend Analysis")
     if success and not df.empty:
-        parameter = st.selectbox(
-            "Select Environmental Parameter to Graph:",
-            ["All Trends Combined", "Temperature (°C)", "Air Humidity (%)", "Core Moisture (%)", "Gas Level (ppm)"]
-        )
+        # Create dedicated tabs for individual parameter selection
+        tab_all, tab_temp, tab_hum, tab_moist, tab_gas = st.tabs([
+            "📊 All Trends Combined", 
+            "🌡️ Temperature (°C)", 
+            "💧 Air Humidity (%)", 
+            "🌱 Core Moisture (%)", 
+            "💨 Gas Level (ppm)"
+        ])
         
-        if parameter == "All Trends Combined":
-            fig = px.line(df, x="created_at", y=["field1", "field2", "field3", "field4"],
+        with tab_all:
+            fig_all = px.line(df, x="created_at", y=["field1", "field2", "field3", "field4"],
                           labels={"value": "Magnitude", "created_at": "Time", "variable": "Sensor Feed"},
                           title="Multi-Channel Bio-Reactor Streams Over Time",
                           color_discrete_sequence=["#4CAF50", "#2196F3", "#FF9800", "#9C27B0"])
             new_names = {'field1': 'Temperature (°C)', 'field2': 'Humidity (%)', 'field3': 'Moisture (%)', 'field4': 'Gas (ppm)'}
-            fig.for_each_trace(lambda t: t.update(name = new_names.get(t.name, t.name)))
-        elif parameter == "Temperature (°C)":
-            fig = px.line(df, x="created_at", y="field1", title="Internal Bin Temperature Trend", color_discrete_sequence=["#4CAF50"])
-        elif parameter == "Air Humidity (%)":
-            fig = px.line(df, x="created_at", y="field2", title="Internal Humidity Trend", color_discrete_sequence=["#2196F3"])
-        elif parameter == "Core Moisture (%)":
-            fig = px.line(df, x="created_at", y="field3", title="Biomass Core Moisture Trend", color_discrete_sequence=["#FF9800"])
-        else:
-            fig = px.line(df, x="created_at", y="field4", title="Volatile Gas Concentration Trend (ppm)", color_discrete_sequence=["#9C27B0"])
+            fig_all.for_each_trace(lambda t: t.update(name = new_names.get(t.name, t.name)))
+            fig_all.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
+            st.plotly_chart(fig_all, use_container_width=True)
             
-        fig.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
-        st.plotly_chart(fig, use_container_width=True)
+        with tab_temp:
+            fig_temp = px.line(df, x="created_at", y="field1", title="Internal Bin Temperature Trend", color_discrete_sequence=["#4CAF50"])
+            fig_temp.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
+            st.plotly_chart(fig_temp, use_container_width=True)
+            
+        with tab_hum:
+            fig_hum = px.line(df, x="created_at", y="field2", title="Internal Humidity Trend", color_discrete_sequence=["#2196F3"])
+            fig_hum.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
+            st.plotly_chart(fig_hum, use_container_width=True)
+            
+        with tab_moist:
+            fig_moist = px.line(df, x="created_at", y="field3", title="Biomass Core Moisture Trend", color_discrete_sequence=["#FF9800"])
+            fig_moist.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
+            st.plotly_chart(fig_moist, use_container_width=True)
+            
+        with tab_gas:
+            fig_gas = px.line(df, x="created_at", y="field4", title="Volatile Gas Concentration Trend (ppm)", color_discrete_sequence=["#9C27B0"])
+            fig_gas.update_layout(hovermode="x unified", plot_bgcolor="white", margin=dict(l=20, r=20, t=40, b=20))
+            st.plotly_chart(fig_gas, use_container_width=True)
     else:
         st.info("ℹ️ Insufficient historical data points to construct telemetry graphs.")
 
