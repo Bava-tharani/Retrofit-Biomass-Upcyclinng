@@ -1,4 +1,3 @@
-pip install streamlit-lottie
 import time
 import streamlit as st
 import requests
