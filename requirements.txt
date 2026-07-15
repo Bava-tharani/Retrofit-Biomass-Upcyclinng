@@ -4,3 +4,6 @@ pandas
 plotly
 joblib
 scikit-learn
+streamlit
+streamlit-lottie
+requests
