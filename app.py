@@ -11,7 +11,7 @@ READ_KEY = "KUTCD4R1BFV20MZ5"
 WEATHER_KEY = "8742cb65d2179b00a2b0de05b5f25a91" 
 
 # --- USER INTERFACE STYLING ---
-st.set_page_config(page_title="AgroSense Smart Hub", page_icon="🌱", layout="wide")
+st.set_page_config(page_title="Smart Biomass Compost Hub", page_icon="🌱", layout="wide")
 
 # Custom CSS for a beautiful, clean mobile/web interface
 st.markdown("""
